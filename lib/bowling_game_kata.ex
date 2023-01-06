@@ -4,15 +4,15 @@ defmodule BowlingGameKata do
   """
 
   @doc """
-  Hello world.
+  calculate bowling game score
 
   ## Examples
 
-      iex> BowlingGameKata.hello()
-      :world
+      iex> BowlingGameKata.score([{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
+      0
 
   """
-  def hello do
-    :world
+  def score(list) do
+    0
   end
 end
