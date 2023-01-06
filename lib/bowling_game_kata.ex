@@ -8,30 +8,37 @@ defmodule BowlingGameKata do
 
   ## Examples
 
-      iex> BowlingGameKata.score([{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
+      iex> BowlingGameKata.score!([{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
       0
 
-      iex> BowlingGameKata.score([{1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}])
+      iex> BowlingGameKata.score!([{1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}])
       20
 
-      iex> BowlingGameKata.score([{5, 5}, {3, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
+      iex> BowlingGameKata.score!([{5, 5}, {3, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
       16
 
-      iex> BowlingGameKata.score([{10}, {3, 4}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
+      iex> BowlingGameKata.score!([{10}, {3, 4}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
       24
 
-      iex> BowlingGameKata.score([{10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10, 10, 10}])
+      iex> BowlingGameKata.score!([{10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10, 10, 10}])
       300
 
-      iex> BowlingGameKata.score([{1, 4}, {4, 5}, {6, 4}, {5, 5}, {10}, {0, 1}, {7, 3}, {6, 4}, {10}, {2, 8, 6}])
+      iex> BowlingGameKata.score!([{1, 4}, {4, 5}, {6, 4}, {5, 5}, {10}, {0, 1}, {7, 3}, {6, 4}, {10}, {2, 8, 6}])
       133
 
   """
-  def score(list) do
-    do_score(list, false, [], [])
+  def score!(list) do
+    {score, _} = score(list)
+    score
   end
 
-  defp do_score([], _spared, _strikes, scores), do: Enum.sum(scores)
+  @spec score([{10} | {number, number} | {number, number, number}]) :: {number, [{any, any}]}
+  def score(list) do
+    {score, scores} = do_score(list, false, [], [])
+    {score, Enum.zip(list, scores)}
+  end
+
+  defp do_score([], _spared, _strikes, scores), do: {Enum.sum(scores), scores}
 
   defp do_score([head | tail], spared, strikes, scores) do
     new_scores = scores(head, spared, strikes, scores)
