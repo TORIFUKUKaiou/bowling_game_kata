@@ -32,7 +32,6 @@ defmodule BowlingGameKata do
     score
   end
 
-  @spec score([{10} | {number, number} | {number, number, number}]) :: {number, [{any, any}]}
   def score(list) do
     {score, scores} = do_score(list, false, [], [])
     {score, Enum.zip(list, scores)}
