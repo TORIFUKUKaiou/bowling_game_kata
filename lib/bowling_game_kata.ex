@@ -17,26 +17,70 @@ defmodule BowlingGameKata do
       iex> BowlingGameKata.score([{5, 5}, {3, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
       16
 
+      iex> BowlingGameKata.score([{10}, {3, 4}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
+      24
+
   """
   def score(list) do
-    do_score(list, false, [])
+    do_score(list, false, [], [])
   end
 
-  defp do_score([], _spared, scores), do: Enum.sum(scores)
+  defp do_score([], _spared, _strikes, scores), do: Enum.sum(scores)
 
-  defp do_score([head | tail], spared, scores) do
-    new_scores = scores(head, spared, scores)
+  defp do_score([head | tail], spared, strikes, scores) do
+    new_scores = scores(head, spared, strikes, scores)
     new_spared = spared(head)
-    do_score(tail, new_spared, new_scores)
+    new_strikes = strikes(head, strikes)
+    do_score(tail, new_spared, new_strikes, new_scores)
   end
 
-  defp scores({a, b}, _, scores) when a + b == 10, do: scores
+  defp scores({10}, true, [], scores), do: scores ++ [10 + 10]
 
-  defp scores({a, b}, true, scores), do: scores({a, b}, spared({a, b}), scores ++ [10 + a])
+  defp scores({10}, false, [], scores), do: scores
 
-  defp scores({a, b}, false, scores), do: scores ++ [a + b]
+  defp scores({10}, false, [10], scores), do: scores
+
+  defp scores({10}, false, [10, 10], scores), do: scores ++ [30]
+
+  defp scores({a, b}, true, [], scores) when a + b == 10, do: scores ++ [10 + a]
+
+  defp scores({a, b}, false, [], scores) when a + b == 10, do: scores
+
+  defp scores({a, b}, false, [10], scores) when a + b == 10, do: scores ++ [10 + a + b]
+
+  defp scores({a, b}, false, [10, 10], scores) when a + b == 10,
+    do: scores ++ [10 + 10 + a, 10 + a + b]
+
+  defp scores({a, b}, true, [], scores),
+    do: scores({a, b}, spared({a, b}), strikes({a, b}, []), scores ++ [10 + a])
+
+  defp scores({a, b}, false, [], scores), do: scores ++ [a + b]
+
+  defp scores({a, b}, false, [10], scores),
+    do: scores({a, b}, spared({a, b}), strikes({a, b}, [10]), scores ++ [10 + a + b])
+
+  defp scores({a, b}, false, [10, 10], scores),
+    do:
+      scores(
+        {a, b},
+        spared({a, b}),
+        strikes({a, b}, [10, 10]),
+        scores ++ [10 + 10 + a, 10 + a + b]
+      )
 
   defp spared({a, b}) when a + b == 10, do: true
 
   defp spared(_), do: false
+
+  defp strikes({10}, []), do: [10]
+
+  defp strikes({10}, [10]), do: [10, 10]
+
+  defp strikes({10}, [10, 10]), do: [10, 10]
+
+  defp strikes(_, []), do: []
+
+  defp strikes(_, [10]), do: []
+
+  defp strikes(_, [10, 10]), do: [10]
 end
