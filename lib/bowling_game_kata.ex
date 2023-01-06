@@ -20,6 +20,9 @@ defmodule BowlingGameKata do
       iex> BowlingGameKata.score([{10}, {3, 4}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}])
       24
 
+      iex> BowlingGameKata.score([{10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10, 10, 10}])
+      300
+
   """
   def score(list) do
     do_score(list, false, [], [])
@@ -41,6 +44,15 @@ defmodule BowlingGameKata do
   defp scores({10}, false, [10], scores), do: scores
 
   defp scores({10}, false, [10, 10], scores), do: scores ++ [30]
+
+  defp scores({a, b, c}, true, [], scores), do: scores ++ [10 + a, a + b + c]
+
+  defp scores({a, b, c}, false, [], scores), do: scores ++ [a + b + c]
+
+  defp scores({a, b, c}, false, [10], scores), do: scores ++ [10 + a + b, a + b + c]
+
+  defp scores({a, b, c}, false, [10, 10], scores),
+    do: scores ++ [10 + 10 + a, 10 + a + b, a + b + c]
 
   defp scores({a, b}, true, [], scores) when a + b == 10, do: scores ++ [10 + a]
 
