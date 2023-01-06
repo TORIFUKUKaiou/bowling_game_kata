@@ -23,6 +23,9 @@ defmodule BowlingGameKata do
       iex> BowlingGameKata.score([{10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10, 10, 10}])
       300
 
+      iex> BowlingGameKata.score([{1, 4}, {4, 5}, {6, 4}, {5, 5}, {10}, {0, 1}, {7, 3}, {6, 4}, {10}, {2, 8, 6}])
+      133
+
   """
   def score(list) do
     do_score(list, false, [], [])
@@ -63,22 +66,13 @@ defmodule BowlingGameKata do
   defp scores({a, b}, false, [10, 10], scores) when a + b == 10,
     do: scores ++ [10 + 10 + a, 10 + a + b]
 
-  defp scores({a, b}, true, [], scores),
-    do: scores({a, b}, spared({a, b}), strikes({a, b}, []), scores ++ [10 + a])
+  defp scores({a, b}, true, [], scores), do: scores ++ [10 + a, a + b]
 
   defp scores({a, b}, false, [], scores), do: scores ++ [a + b]
 
-  defp scores({a, b}, false, [10], scores),
-    do: scores({a, b}, spared({a, b}), strikes({a, b}, [10]), scores ++ [10 + a + b])
+  defp scores({a, b}, false, [10], scores), do: scores ++ [10 + a + b, a + b]
 
-  defp scores({a, b}, false, [10, 10], scores),
-    do:
-      scores(
-        {a, b},
-        spared({a, b}),
-        strikes({a, b}, [10, 10]),
-        scores ++ [10 + 10 + a, 10 + a + b]
-      )
+  defp scores({a, b}, false, [10, 10], scores), do: scores ++ [10 + 10 + a, 10 + a + b, a + b]
 
   defp spared({a, b}) when a + b == 10, do: true
 
@@ -94,5 +88,5 @@ defmodule BowlingGameKata do
 
   defp strikes(_, [10]), do: []
 
-  defp strikes(_, [10, 10]), do: [10]
+  defp strikes(_, [10, 10]), do: []
 end
