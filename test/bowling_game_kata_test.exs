@@ -11,4 +11,9 @@ defmodule BowlingGameKataTest do
     list = List.duplicate({1, 1}, 10)
     assert BowlingGameKata.score(list) == 20
   end
+
+  test "spare" do
+    list = [{5, 5}, {3, 0}] ++ List.duplicate({0, 0}, 8)
+    assert BowlingGameKata.score(list) == 16
+  end
 end
